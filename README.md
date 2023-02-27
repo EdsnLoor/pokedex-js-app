@@ -8,3 +8,4 @@ The architecture of the project follows the principles of Clean Architecture. It
 It gives information about the Pokemon selected
 
 ## Running
+I'm using the [Pokémon API](https://pokeapi.co/api/v2/pokemon) to get all the information about the Pokémon.
