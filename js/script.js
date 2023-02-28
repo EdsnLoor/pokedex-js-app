@@ -1,10 +1,6 @@
 // Define the API endpoint URL
 const apiUrl = 'https://pokeapi.co/api/v2/pokemon/';
 
-// Select the DOM elements we'll be using to display the results
-const pokemonList = document.querySelector('#pokemon-list');
-const errorMessage = document.querySelector('#error-message');
-
 // Function to fetch the Pokemon data from the API
 async function fetchPokemonData() {
     try {
@@ -21,16 +17,17 @@ async function fetchPokemonData() {
             const pokemonResponse = await fetch(pokemonData.url);
             const pokemonDataFull = await pokemonResponse.json();
 
-            // Extract the name, abilities, and moves from the response
+            // Extract the name, height, types, and moves from the response
             const name = pokemonDataFull.name;
-            const abilities = pokemonDataFull.abilities.map(ability => ability.ability.name);
-            const moves = pokemonDataFull.moves.map(move => move.move.name);
+            const height = pokemonDataFull.height
+            let typesNames = pokemonDataFull.types.map((type) => type.type.name);
+            let movesNames = pokemonDataFull.moves.map((move) => move.move.name);
 
-            // Create a list item element for this Pokemon and add it to the DOM
-            const listItem = document.createElement('li');
-            listItem.innerHTML = `<strong>${name}</strong><br>Abilities: ${abilities.join(', ')}<br>Moves: ${moves.join(', ')}`;
-            pokemonList.appendChild(listItem);
+            // Create an object for this Pokémon and add it to the pokemonData object
+            let pokemon= { pokemonName:name, height:height, types:typesNames, moves:movesNames};
+            console.log(pokemon)
         }
+
     } catch (error) {
         // If there's an error, display a message to the user
         console.error(error);
