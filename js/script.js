@@ -6,3 +6,17 @@ let pokemonList = [
     { name: "charmander", height: 2.9, type: ["fire"] },
     { name: "charmeleon", height: 0.6, type: ["fire"] },
 ];
+for (let i = 0; i < pokemonList.length; i++)
+// Initalize for loop to run for the total length of the array
+
+{
+    if (pokemonList[i].height > 1) {
+        console.log(pokemonList[i].name + " (height: " + pokemonList[i].height + ") - Wow, that's big!");
+        document.write(pokemonList[i].name + " (height: " + pokemonList[i].height + ")  - Wow, that's big!" + "<br>");
+    }
+
+    else {
+        console.log(pokemonList[i].name + " (height: " + pokemonList[i].height + ")");
+        document.write(pokemonList[i].name + " (height: " + pokemonList[i].height + ")" + "<br>");
+    }
+}
