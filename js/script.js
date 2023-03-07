@@ -2,14 +2,41 @@ let pokemonRepository = (function () {
     let pokemonList = [];
     let apiUrl = 'https://pokeapi.co/api/v2/pokemon/?limit=150';
 
-    function add(pokemon) {
-        pokemonList.push(pokemon);
-    }
-
     // Get all the Pokémon
     function getAll() {
         return pokemonList;
     }
+    function loadList() {
+        return fetch(apiUrl)
+            .then(function (response) {
+                return response.json();
+            })
+            .then(function (json) {
+                const promises = json.results.map(function (item) {
+                    let pokemon = {
+                        name: item.name,
+                        detailsUrl: item.url
+                    };
+                    return fetch(pokemon.detailsUrl)
+                        .then(function (response) {
+                            return response.json();
+                        })
+                        .then(function (details) {
+                            // Add the details to the pokemon object
+                            pokemon.imageUrl = details.sprites.other.dream_world.front_default;
+                            pokemon.height = details.height;
+                            pokemon.type = details.types.map((type) => type.type.name);
+                            console.log(pokemon)
+                            return pokemon;
+                        })
+                        .catch(function (e) {
+                            console.error(e);
+                        });
+                });
+            });
+
+    }
+
     function addListItem(pokemon){
         // setting variables
         let pokemonList = document.querySelector(".container");
@@ -28,50 +55,17 @@ let pokemonRepository = (function () {
             showDetails(pokemon);
         });
     }
-
-    function loadList() {
-        return fetch(apiUrl).then(function (response) {
-            return response.json();
-        }).then(function (json) {
-            json.results.forEach(function (item) {
-                let pokemon = {
-                    name: item.name,
-                    detailsUrl: item.url
-                };
-                add(pokemon);
-            });
-        }).catch(function (e) {
-            console.error(e);
-        })
-    }
-
-    function loadDetails(item) {
-        let url = item.detailsUrl;
-        return fetch(url).then(function (response) {
-            return response.json();
-        }).then(function (details) {
-            // Now we add the details to the item
-            item.imageUrl = details.sprites.other.dream_world.front_default;
-            item.height = details.height;
-            item.type = details.types.map((type) => type.type.name);
-        }).catch(function (e) {
-            console.error(e);
-        });
-    }
-
     // Shows Pokémon individual details
     function showDetails(pokemon) {
-        loadDetails(pokemon).then(function () {
+        loadList(pokemon).then(function () {
             console.log(pokemon);
         });
     }
 
     return {
-        add: add,
         getAll: getAll,
         addListItem : addListItem,
         loadList : loadList,
-        loadDetails : loadDetails
     };
 })();
 
