@@ -14,8 +14,6 @@ h1 {
     -moz-border-radius: 10px;
     -o-border-radius: 10px;
     background-color: #DFDFDF;
-    display: grid;
-    grid-template-columns: 300px 300px 300px;
 }
 
 .left {
@@ -38,6 +36,34 @@ h1 {
     -moz-border-radius: 6px;
     -o-border-radius: 6px;
     font-size: 40px;
+    font-family: "helvetica neue", Helvetica, Verdana, sans-serif;
+    color: #FFF;
+    background-color: #68A090;
+    border: 1px solid #44685E;
+}
+
+.examples {
+    width: 700px;
+    min-width: 300px;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 40px;
+    border-radius: 10px;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    -o-border-radius: 10px;
+    background-color: #DFDFDF;
+}
+
+.examples-type{
+    margin: 10px;
+    padding: 5px 8px 5px 8px;
+    display: inline-block;
+    border-radius: 6px;
+    -webkit-border-radius: 6px;
+    -moz-border-radius: 6px;
+    -o-border-radius: 6px;
+    font-size: 25px;
     font-family: "helvetica neue", Helvetica, Verdana, sans-serif;
     color: #FFF;
     background-color: #68A090;
@@ -127,4 +153,26 @@ h1 {
 .dragon {
     background-color: #7038F8;
     border: 1px solid #4924A1;
+}
+
+@media (min-width: 200px) {
+    .grid {
+        display: grid;
+        grid-template-columns: repeat(1, 1fr);
+        grid-gap: 20px;
+    }
+}
+@media (min-width: 750px){
+    .grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        grid-gap: 20px;
+    }
+}
+@media (min-width: 1000px){
+    .grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        grid-gap: 20px;
+    }
 }
