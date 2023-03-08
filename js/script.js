@@ -1,31 +1,62 @@
 let pokemonRepository = (function () {
-    let pokemonList = [
-        { name: "Bulbasaur", height: 7, type: ["normal", "fire"] },
-        { name: "Ivysaur", height: 1, type: ["electric", "water"] },
-        { name: "Venusaur", height: 0.3, type: ["grass", "ice"] },
-        { name: "Groudon", height: 3.5, type: ["ground"] },
-        { name: "Charmander", height: 2.9, type: ["flying"] },
-        { name: "Charmeleon", height: 0.6, type: ["ghost"] },
-        { name: "Bulbasaur", height: 7, type: ["rock", "poison"] },
-        { name: "Ivysaur", height: 1, type: ["fighting", "poison"] },
-        { name: "Venusaur", height: 0.3, type: ["poison", "poison"] },
-        { name: "Groudon", height: 3.5, type: ["psychic"] },
-        { name: "Charmander", height: 2.9, type: ["bug"] },
-        { name: "Charmeleon", height: 0.6, type: ["fire"] },
-        { name: "Charmander", height: 2.9, type: ["water"] },
-        { name: "Charmeleon", height: 0.6, type: ["ice"] },
-        { name: "Bulbasaur", height: 7, type: ["dark", "poison"] },
-        { name: "Ivysaur", height: 1, type: ["steel", "poison"] },
-        { name: "Venusaur", height: 0.3, type: ["dragon", "poison"] }
-    ];
+    let pokemonList = [];
+    let apiUrl = 'https://pokeapi.co/api/v2/pokemon/?limit=150';
 
     function add(pokemon) {
         pokemonList.push(pokemon);
     }
-
     // Get all the Pokémon
     function getAll() {
         return pokemonList;
+    }
+    function loadList() {
+        showLoadingMessage();
+        return fetch(apiUrl)
+            .then(function (response) {
+                return response.json();
+            })
+            .then(function (json) {
+                const promises = json.results.map(function (item) {
+                    let pokemon = {
+                        name: item.name,
+                        detailsUrl: item.url
+                    };
+                    return fetch(pokemon.detailsUrl)
+                        .then(function (response) {
+                            return response.json();
+                        })
+                        .then(function (details) {
+                            // Add the details to the pokemon object
+                            pokemon.imageUrl = details.sprites.other.dream_world.front_default;
+                            pokemon.height = details.height;
+                            pokemon.type = details.types.map((type) => type.type.name);
+                            // Return the modified pokemon object
+                            return pokemon
+                        })
+                        .catch(function (e) {
+                            console.error(e);
+                        });
+                });
+                // Return a Promise that resolves to the array of objects
+                return Promise.all(promises);
+            })
+            .then(function (pokemonList) {
+                // Map the pokemonList to an array of objects with the desired data
+                return pokemonList.map(function (pokemon) {
+                    let updatedPokemon = {
+                        name: pokemon.name,
+                        height: pokemon.height,
+                        imageUrl: pokemon.imageUrl,
+                        detailsUrl: pokemon.detailsUrl,
+                        type: pokemon.type
+                    };
+                    add(updatedPokemon)
+                });
+            })
+            .catch(function (e) {
+                console.error(e);
+            });
+
     }
     function addListItem(pokemon){
         // setting variables
@@ -45,19 +76,38 @@ let pokemonRepository = (function () {
             showDetails(pokemon);
         });
     }
-
     // Shows Pokémon individual details
     function showDetails(pokemon) {
-        console.log(pokemon)
+        loadList(pokemon).then(function () {
+            console.log(pokemon);
+        });
+    }
+
+    function showLoadingMessage() {
+        let loadingScreen= document.querySelector('.loading-screen')
+        loadingScreen.classList.remove('not-visible');
+        loadingScreen.classList.add('visible');
+    }
+
+    function hideLoadingMessage() {
+        let loadingScreen= document.querySelector('.loading-screen');
+        loadingScreen.classList.remove('visible');
+        loadingScreen.classList.add('not-visible');
     }
 
     return {
         add: add,
         getAll: getAll,
-        addListItem : addListItem
+        addListItem : addListItem,
+        loadList : loadList,
+        hideLoadingMessage : hideLoadingMessage
     };
 })();
 
-pokemonRepository.getAll().forEach(function (pokemon){
-    pokemonRepository.addListItem(pokemon);
+pokemonRepository.loadList().then(function() {
+    // Now the data is loaded!
+    pokemonRepository.getAll().forEach(function(pokemon){
+        pokemonRepository.addListItem(pokemon);
+    });
+    setTimeout(pokemonRepository.hideLoadingMessage, 300);
 });
