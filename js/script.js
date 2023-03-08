@@ -2,11 +2,15 @@ let pokemonRepository = (function () {
     let pokemonList = [];
     let apiUrl = 'https://pokeapi.co/api/v2/pokemon/?limit=150';
 
+    function add(pokemon) {
+        pokemonList.push(pokemon);
+    }
     // Get all the Pokémon
     function getAll() {
         return pokemonList;
     }
     function loadList() {
+        showLoadingMessage();
         return fetch(apiUrl)
             .then(function (response) {
                 return response.json();
@@ -26,17 +30,34 @@ let pokemonRepository = (function () {
                             pokemon.imageUrl = details.sprites.other.dream_world.front_default;
                             pokemon.height = details.height;
                             pokemon.type = details.types.map((type) => type.type.name);
-                            console.log(pokemon)
-                            return pokemon;
+                            // Return the modified pokemon object
+                            return pokemon
                         })
                         .catch(function (e) {
                             console.error(e);
                         });
                 });
+                // Return a Promise that resolves to the array of objects
+                return Promise.all(promises);
+            })
+            .then(function (pokemonList) {
+                // Map the pokemonList to an array of objects with the desired data
+                return pokemonList.map(function (pokemon) {
+                    let updatedPokemon = {
+                        name: pokemon.name,
+                        height: pokemon.height,
+                        imageUrl: pokemon.imageUrl,
+                        detailsUrl: pokemon.detailsUrl,
+                        type: pokemon.type
+                    };
+                    add(updatedPokemon)
+                });
+            })
+            .catch(function (e) {
+                console.error(e);
             });
 
     }
-
     function addListItem(pokemon){
         // setting variables
         let pokemonList = document.querySelector(".container");
@@ -46,8 +67,8 @@ let pokemonRepository = (function () {
         // creating a button for each Pokémon
         button.innerText = pokemon.name;
         button.classList.add("type");
-        // let pokemonType = pokemon.type[0];
-        // button.classList.add(pokemonType);
+        let pokemonType = pokemon.type[0];
+        button.classList.add(pokemonType);
         button.classList.add("left");
         listPokemon.appendChild(button)
         pokemonList.appendChild(listPokemon)
@@ -62,10 +83,24 @@ let pokemonRepository = (function () {
         });
     }
 
+    function showLoadingMessage() {
+        let loadingScreen= document.querySelector('.loading-screen')
+        loadingScreen.classList.remove('not-visible');
+        loadingScreen.classList.add('visible');
+    }
+
+    function hideLoadingMessage() {
+        let loadingScreen= document.querySelector('.loading-screen');
+        loadingScreen.classList.remove('visible');
+        loadingScreen.classList.add('not-visible');
+    }
+
     return {
+        add: add,
         getAll: getAll,
         addListItem : addListItem,
         loadList : loadList,
+        hideLoadingMessage : hideLoadingMessage
     };
 })();
 
@@ -74,4 +109,5 @@ pokemonRepository.loadList().then(function() {
     pokemonRepository.getAll().forEach(function(pokemon){
         pokemonRepository.addListItem(pokemon);
     });
+    setTimeout(pokemonRepository.hideLoadingMessage, 300);
 });

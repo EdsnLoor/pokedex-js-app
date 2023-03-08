@@ -155,6 +155,39 @@ h1 {
     border: 1px solid #4924A1;
 }
 
+.visible {
+    position: fixed;
+    padding: 0px;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: inherit;
+
+    /*show it above other content */
+    z-index: 999;
+
+    /*center the modal */
+    display: -ms-grid;
+    display: grid;
+    text-align: center;
+}
+
+.loading-modal {
+    -ms-flex-item-align: center;
+    -ms-grid-row-align: center;
+    align-self: center;
+}
+
+.loading-gif {
+    width: 80px;
+}
+
+.not-visible {
+    display: none;
+}
+
+
 @media (min-width: 200px) {
     .grid {
         display: grid;
