@@ -81,6 +81,7 @@ let pokemonRepository = (function () {
         loadList(pokemon).then(function () {
             console.log(pokemon);
         });
+        hideLoadingMessage();
     }
 
     function showLoadingMessage() {
