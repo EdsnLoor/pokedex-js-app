@@ -87,41 +87,26 @@ let pokemonRepository = (function () {
 
     // Function that shows a pop-up for each Pokemon
     function showModal(pokemonList) {
-        modalContainer.innerHTML = '';
-        let modal = document.createElement('div');
-        modal.classList.add('modal');
+        const modalElement = document.getElementById('modal-container');
+        const modal = new bootstrap.Modal(modalElement);
 
-        // Create a close button
-        let closeButtonElement = document.createElement('button');
-        closeButtonElement.classList.add('modal-close');
-        closeButtonElement.innerText = 'Close';
-        closeButtonElement.addEventListener('click', hideModal);
-
-        let titleElement = document.createElement('h1');
+        // Set the modal title
+        const titleElement = modalElement.querySelector('.modal-title');
         titleElement.innerText = pokemonList.name;
 
-        let pokemonImg = document.createElement('img');
-        pokemonImg.src = pokemonList.imageUrl;
+        // Set the modal body
+        const bodyElement = modalElement.querySelector('.modal-body');
+        bodyElement.innerHTML = `
+            <div class="text-center">
+                <img src="${pokemonList.imageUrl}" alt="${pokemonList.name}" />
+            </div>
+            <hr>
+            <p>Height: ${pokemonList.height}</p>
+            <p>Type: ${pokemonList.type.join(', ')}</p>
+    `;
 
-        let heightElement = document.createElement('p');
-        heightElement.innerText = "Height: " + pokemonList.height;
-
-        // Define if the pokémon has 1 or 2 types
-        let typeElement = document.createElement('p');
-        if (pokemonList.type.length > 1){
-            typeElement.innerText = "Type: " + pokemonList.type[0] + " & " + pokemonList.type[1];
-        } else {
-            typeElement.innerText = "Type: " + pokemonList.type[0];
-        }
-
-        modal.appendChild(closeButtonElement);
-        modal.appendChild(titleElement);
-        modal.appendChild(pokemonImg);
-        modal.appendChild(heightElement);
-        modal.appendChild(typeElement);
-        modalContainer.appendChild(modal);
-
-        modalContainer.classList.add('is-visible');
+        // Show the modal
+        modal.show();
     }
 
     function hideModal() {
