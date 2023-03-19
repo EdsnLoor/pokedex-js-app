@@ -63,6 +63,7 @@ let pokemonRepository = (function () {
         // setting variables
         let pokemonList = document.querySelector(".container");
         let listPokemon = document.createElement("span");
+        listPokemon.classList.add('group-item')
         let button = document.createElement("button");
 
         // creating a button for each Pokémon
@@ -84,30 +85,6 @@ let pokemonRepository = (function () {
         hideLoadingMessage();
         showModal(pokemon);
     }
-
-    // Function that shows a pop-up for each Pokemon
-    // function showModal(pokemonList) {
-    //     const modalElement = document.getElementById('modal-container');
-    //     const modal = new bootstrap.Modal(modalElement);
-    //
-    //     // Set the modal title
-    //     const titleElement = modalElement.querySelector('.modal-title');
-    //     titleElement.innerText = pokemonList.name;
-    //
-    //     // Set the modal body
-    //     const bodyElement = modalElement.querySelector('.modal-body');
-    //     bodyElement.innerHTML = `
-    //         <div class="text-center">
-    //             <img src="${pokemonList.imageUrl}" alt="${pokemonList.name}" />
-    //         </div>
-    //         <hr>
-    //         <p>Height: ${pokemonList.height}</p>
-    //         <p>Type: ${pokemonList.type.join(', ')}</p>
-    // `;
-    //
-    //     // Show the modal
-    //     modal.show();
-    // }
 
     function showModal(pokemonList) {
         const modalElement = document.getElementById('modal-container');
@@ -132,9 +109,8 @@ let pokemonRepository = (function () {
         // Create a div element for the height and type information
         const infoElement = document.createElement('div');
         infoElement.innerHTML = `
-        <p>Height: ${pokemonList.height}</p>
-        <p>Type: ${pokemonList.type.join(', ')}</p>
-    `;
+            <p>HEIGHT: <br> > ${pokemonList.height} m</p>
+            <p>TYPES: <br> > ${pokemonList.type.join(', ')}</p>`;
         let normalImgURL = "https://ih1.redbubble.net/image.4048810590.2852/st,small,507x507-pad,600x600,f8f8f8.jpg";
         let waterImgURL = "https://bracketfights.com/images/hero/2019/favorite-water-type-pokmon-all-gens-and-forms-18888/1620848623.jpg";
         let fireImgURL = "https://ih1.redbubble.net/image.4102494090.0067/ur,pin_large_front,square,600x600.jpg";
@@ -203,7 +179,25 @@ let pokemonRepository = (function () {
         modal.show();
     }
 
+    function searchPokemon() {
+        let searchInput = document.getElementById('search-input');
+        let searchText = searchInput.value.toUpperCase();
+        let allPokemon = document.querySelectorAll('.group-item');
 
+        allPokemon.forEach(function(pokemon) {
+            let pokemonName = pokemon.querySelector('.type').innerText;
+            if (pokemonName.includes(searchText)) {
+                pokemon.style.display = 'block';
+            } else {
+                pokemon.style.display = 'none';
+            }
+        });
+    }
+
+    let searchInput = document.getElementById("search-input");
+    searchInput.addEventListener("input", function () {
+        searchPokemon();
+    });
 
     function hideModal() {
         modalContainer.classList.remove('is-visible');
