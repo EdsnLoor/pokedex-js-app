@@ -9,7 +9,7 @@ It gives information about the Pokemon selected.
 
 ## View
 
-The project is not yet deployed. To run it, download the code and open the index.html file locally.
+Link to the project [PokemonApp](https://edsnloor.github.io/pokedex-js-app/).
 
 ## Languages
 - HTML
